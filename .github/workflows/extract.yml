@@ -63,7 +63,7 @@ jobs:
 
       - name: Compress Rootfs
         run: |
-          sudo tar -czvf ${{ github.event.inputs.rootfs_name }}.tar.gz -C /extracted-rootfs/ . > /dev/null 2>&1
+          sudo tar -czvf ${{ github.event.inputs.rootfs_name }}_rootfs.tar.gz -C /extracted-rootfs/ . > /dev/null 2>&1
 
       - name: Umount Rootfs
         run: |
