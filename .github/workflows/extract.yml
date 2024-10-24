@@ -1,0 +1,22 @@
+name: Download Firmware
+on:
+  workflow_dispatch:
+    inputs:
+      fw_link:
+        description: 'Input firmware link'
+        required: true
+jobs:
+  download:
+    name: Download Firmware
+    runs-on: ubuntu-latest
+    steps:
+    - name: Extract Firmware
+      run: |
+        if [[ ${{ env.ROOTFS_PATH }} == *.img.gz ]]; then
+          sudo gunzip "${{ env.ROOTFS_PATH }}"
+        elif [[ ${{ env.ROOTFS_PATH }} == *.img.xz ]]; then
+          sudo unxz "${{ env.ROOTFS_PATH }}"
+        else
+          echo "Unsupported file type: ${ROOTFS_PATH}"
+          exit 1
+        fi
