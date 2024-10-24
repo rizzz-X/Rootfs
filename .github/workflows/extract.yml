@@ -57,11 +57,11 @@ jobs:
       - name: Copy Rootfs
         run: |
           mkdir -p extracted-rootfs
-          sudo cp -a /mnt/openwrt-rootfs/. /extracted-rootfs/
+          sudo cp -a /mnt/openwrt-rootfs/. /extracted-rootfs/ > /dev/null 2>&1
 
       - name: Compress Rootfs
         run: |
-          sudo tar -czvf openwrt-rootfs.tar.gz -C /extracted-rootfs/ .
+          sudo tar -czvf openwrt-rootfs.tar.gz -C /extracted-rootfs/ . > /dev/null 2>&1
 
       - name: Umount Rootfs
         run: |
