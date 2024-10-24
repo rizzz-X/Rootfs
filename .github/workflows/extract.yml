@@ -10,13 +10,18 @@ jobs:
     name: Download Firmware
     runs-on: ubuntu-latest
     steps:
-    - name: Extract Firmware
+    - name: Download Fw
       run: |
-        if [[ ${{ env.ROOTFS_PATH }} == *.img.gz ]]; then
-          sudo gunzip "${{ env.ROOTFS_PATH }}"
+        wget ${{ github.event.inputs.fw_link }}
+        FW_PATH=$(find ./ -name "*rootfs.tar.gz")
+        echo "FW_PATH=$FW_PATH" >> $GITHUB_ENV
+    - name: Extract Fw
+      run: |
+        if [[ ${{ env.FW_PATH }} == *.img.gz ]]; then
+          sudo gunzip "${{ env.FW_PATH }}"
         elif [[ ${{ env.ROOTFS_PATH }} == *.img.xz ]]; then
-          sudo unxz "${{ env.ROOTFS_PATH }}"
+          sudo unxz "${{ env.FW_PATH }}"
         else
-          echo "Unsupported file type: ${ROOTFS_PATH}"
+          echo "Unsupported file type: ${FW_PATH}"
           exit 1
         fi
