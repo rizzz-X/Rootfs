@@ -54,7 +54,27 @@ jobs:
           sudo mkdir -p /mnt/openwrt-rootfs
           sudo mount -o loop,offset=${{ env.partisi_offset }} "${{ env.EXTRACTED_FW }}" /mnt/openwrt-rootfs
 
-      - name: See Directory
+      - name: Copy Rootfs
         run: |
-          pwd
-          ls -la
+          mkdir -p extracted-rootfs
+          sudo cp -a /mnt/openwrt-rootfs/. /extracted-rootfs/
+
+      - name: Compress Rootfs
+        run: |
+          tar -czvf openwrt-rootfs.tar.gz -C /path/to/your/extracted-rootfs/ .
+
+      - name: Umount Rootfs
+        run: |
+          sudo umount /mnt/openwrt-rootfs
+
+      - name: Upload release asset
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./*.tar.gz
+          name: Mutiara-Wrt Rootfs
+          tag: ${{ github.ref }}
+          file_glob: true
+          overwrite: true
+          body: |
+            ##  Mutiara-Wrt Rootfs
