@@ -1,2 +1,0 @@
-# Rootfs
-Mutiara-Wrt Rootfs
