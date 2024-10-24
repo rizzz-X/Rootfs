@@ -25,20 +25,18 @@ jobs:
               exit 1
           fi
 
-          # Tentukan nama file hasil ekstraksi
           if [[ ${{ env.FW_PATH }} == *.img.gz ]]; then
               sudo gunzip "${{ env.FW_PATH }}"
-              EXTRACTED_FW_PATH="${{ env.FW_PATH }}.img"  # Menghapus .gz
+              EXTRACTED_FW_PATH="${{ env.FW_PATH%.gz }}"  # Menghapus .gz
           elif [[ ${{ env.FW_PATH }} == *.img.xz ]]; then
               sudo unxz "${{ env.FW_PATH }}"
-              EXTRACTED_FW_PATH="${{ env.FW_PATH }}.img"  # Menghapus .xz
+              EXTRACTED_FW_PATH="${{ env.FW_PATH%.xz }}"  # Menghapus .xz
           else
               echo "Unsupported file type: ${{ env.FW_PATH }}"
               exit 1
           fi
 
-          echo "EXTRACTED_FW_PATH=${EXTRACTED_FW_PATH%.gz}" >> $GITHUB_ENV
-          echo "EXTRACTED_FW_PATH=${EXTRACTED_FW_PATH%.xz}" >> $GITHUB_ENV
+          echo "EXTRACTED_FW_PATH=$EXTRACTED_FW_PATH" >> $GITHUB_ENV
 
       - name: Get Partition Offset
         id: get_offset
