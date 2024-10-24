@@ -67,14 +67,15 @@ jobs:
         run: |
           sudo umount /mnt/openwrt-rootfs
 
-      - name: Upload release asset
-        uses: svenstaro/upload-release-action@v2
+      - name: Upload Rootfs
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./*.tar.gz
           name: Mutiara-Wrt Rootfs
-          tag: ${{ github.ref }}
-          file_glob: true
-          overwrite: true
+          tag_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+          files: ./*.tar.gz
           body: |
-            ##  Mutiara-Wrt Rootfs
+            ##  Kumpulan Rootfs
