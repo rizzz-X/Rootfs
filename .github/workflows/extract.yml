@@ -26,17 +26,21 @@ jobs:
 
           if [[ ${{ env.FW_PATH }} == *.img.gz ]]; then
               sudo gunzip "${{ env.FW_PATH }}"
+              EXTRACTED_PATH="${{ env.FW_PATH%.gz }}"  # Menghapus .gz
           elif [[ ${{ env.FW_PATH }} == *.img.xz ]]; then
               sudo unxz "${{ env.FW_PATH }}"
+              EXTRACTED_PATH="${{ env.FW_PATH%.xz }}"  # Menghapus .xz
           else
               echo "Unsupported file type: ${{ env.FW_PATH }}"
               exit 1
           fi
 
+          echo "EXTRACTED_PATH=$EXTRACTED_PATH" >> $GITHUB_ENV
+
       - name: Get Partition Offset
         id: get_offset
         run: |
-          fdisk_output=$(fdisk -l *.img)
+          fdisk_output=$(fdisk -l "${{ env.EXTRACTED_PATH }}")
           echo "$fdisk_output"
           offset=$(echo "$fdisk_output" | grep "${{ env.FW_PATH }}2" | awk '{print $2}')
           partisi_offset=$((offset * 512))
@@ -45,7 +49,7 @@ jobs:
       - name: Mount Image
         run: |
           sudo mkdir -p /mnt/openwrt-rootfs
-          sudo mount -o loop,offset=${{ env.partisi_offset }} "${{ env.FW_PATH }}" /mnt/openwrt-rootfs
+          sudo mount -o loop,offset=${{ env.partisi_offset }} "${{ env.EXTRACTED_PATH }}" /mnt/openwrt-rootfs
 
       - name: Copy Rootfs
         run: |
