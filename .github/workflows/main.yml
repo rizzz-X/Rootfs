@@ -20,7 +20,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         with:
           name: Mutiara-Wrt_23.05.5_Rootfs
           tag_name: v23.05.5
