@@ -14,7 +14,7 @@ jobs:
       - name: Download Fw
         run: |
           wget ${{ github.event.inputs.fw_link }}
-          FW_PATH=$(find ./ -name "*rootfs.tar.gz")
+          FW_PATH=$(find ./ -name "*img.*")
           echo "FW_PATH=$FW_PATH" >> $GITHUB_ENV
 
       - name: Extract Fw
