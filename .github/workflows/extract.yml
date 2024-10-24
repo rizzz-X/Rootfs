@@ -42,7 +42,7 @@ jobs:
         run: |
           fdisk_output=$(fdisk -l "${{ env.EXTRACTED_PATH }}")
           echo "$fdisk_output"
-          offset=$(echo "$fdisk_output" | grep "${{ env.FW_PATH }}2" | awk '{print $2}')
+          offset=$(echo "$fdisk_output" | grep "${{ env.EXTRACTED_PATH }}2" | awk '{print $2}')
           partisi_offset=$((offset * 512))
           echo "partisi_offset=$partisi_offset" >> $GITHUB_ENV
 
