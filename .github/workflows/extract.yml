@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Download Fw
         run: |
-          wget ${{ github.event.inputs.fw_link }}
+          wget ${{ github.event.inputs.fw_link }} > /dev/null 2>&1
           FW_PATH=$(find ./ -name "*img.*")
           echo "FW_PATH=$FW_PATH" >> $GITHUB_ENV
 
@@ -33,8 +33,23 @@ jobs:
               exit 1
           fi
 
-      - name: Download Fw
+      - name: Get Partition Offset
+        id: get_offset
         run: |
-          fdisk -l *.img
-          mkdir /mnt/openwrt-rootfs
+          fdisk_output=$(fdisk -l "${{ env.FW_PATH }}")
+          echo "$fdisk_output"
+          offset=$(echo "$fdisk_output" | grep "${{ env.FW_PATH }}2" | awk '{print $2}')
+          partisi_offset=$((offset * 512))
+          echo "partisi_offset=$partisi_offset" >> $GITHUB_ENV
+
+      - name: Mount Image
+        run: |
+          sudo mkdir -p /mnt/openwrt-rootfs
+          sudo mount -o loop,offset=${{ env.partisi_offset }} "${{ env.FW_PATH }}" /mnt/openwrt-rootfs
+
+      - name: Copy Rootfs
+        run: |
+          pwd
+
+
           
