@@ -36,7 +36,7 @@ jobs:
       - name: Get Partition Offset
         id: get_offset
         run: |
-          fdisk_output=$(fdisk -l "${{ env.FW_PATH }}")
+          fdisk_output=$(fdisk -l *.img)
           echo "$fdisk_output"
           offset=$(echo "$fdisk_output" | grep "${{ env.FW_PATH }}2" | awk '{print $2}')
           partisi_offset=$((offset * 512))
