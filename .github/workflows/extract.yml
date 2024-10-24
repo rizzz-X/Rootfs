@@ -19,13 +19,11 @@ jobs:
 
       - name: Extract Fw
         run: |
-          # Cek apakah FW_PATH sudah ditentukan dan ada
           if [[ -z "${{ env.FW_PATH }}" ]]; then
               echo "Firmware path is empty. Exiting."
               exit 1
           fi
 
-          # Mengekstrak file sesuai dengan ekstensi
           if [[ ${{ env.FW_PATH }} == *.img.gz ]]; then
               sudo gunzip "${{ env.FW_PATH }}"
           elif [[ ${{ env.FW_PATH }} == *.img.xz ]]; then
@@ -34,3 +32,9 @@ jobs:
               echo "Unsupported file type: ${{ env.FW_PATH }}"
               exit 1
           fi
+
+      - name: Download Fw
+        run: |
+          fdisk -l *.img
+          mkdir /mnt/openwrt-rootfs
+          
