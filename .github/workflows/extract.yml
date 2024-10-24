@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Download Fw
         run: |
-          wget ${{ github.event.inputs.fw_link }}
+          wget ${{ github.event.inputs.fw_link }} > /dev/null 2>&1
           FW_PATH=$(find ./ -name "*img.*")
           echo "FW_PATH=$FW_PATH" >> $GITHUB_ENV
 
@@ -61,7 +61,7 @@ jobs:
 
       - name: Compress Rootfs
         run: |
-          tar -czvf openwrt-rootfs.tar.gz -C /path/to/your/extracted-rootfs/ .
+          tar -czvf openwrt-rootfs.tar.gz -C /extracted-rootfs/ .
 
       - name: Umount Rootfs
         run: |
