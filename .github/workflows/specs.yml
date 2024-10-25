@@ -1,0 +1,12 @@
+name: Engine Spesification
+on:
+  workflow_dispatch:
+jobs:
+  check:
+    name: Check Specs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Neofetch
+        run: |
+          sudo apt install neofetch -y
+          neofetch
