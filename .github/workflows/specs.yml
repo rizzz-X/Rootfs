@@ -4,7 +4,7 @@ on:
 jobs:
   check:
     name: Check Specs
-    runs-on: windows-10
+    runs-on: ubuntu-latest
     steps:
       - name: Neofetch
         run: |
