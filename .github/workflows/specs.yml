@@ -10,3 +10,8 @@ jobs:
         run: |
           sudo apt install neofetch -y
           neofetch
+
+      - name: Speedtest
+        run: |
+          sudo apt install speedtest-cli -y
+          speedtest
