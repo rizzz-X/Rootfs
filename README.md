@@ -4,8 +4,8 @@
 
 <div align="center">
   <img alt="License" src="https://img.shields.io/github/license/Maizil41/Rootfs?style=for-the-badge&logo=github">
-  <a target="_blank" href="https://github.com/Maizil41/Rootfs/releases"><img src="https://img.shields.io/github/release/Maizil41/Rootfs?style=for-the-badge&logo=Openwrt"></a>
-  <a target="_blank" href="https://github.com/Maizil41/Rootfs/releases"><img src="https://img.shields.io/github/downloads/Maizil41/Rootfs/total?style=for-the-badge&logo=Openwrt"></a>
+  <a target="_blank" href="https://github.com/Maizil41/Rootfs/releases"><img src="https://img.shields.io/github/release/Maizil41/Rootfs?style=for-the-badge&logo=github"></a>
+  <a target="_blank" href="https://github.com/Maizil41/Rootfs/releases"><img src="https://img.shields.io/github/downloads/Maizil41/Rootfs/total?style=for-the-badge&logo=github"></a>
 </div>
 <hr/>
 <p align="center">
