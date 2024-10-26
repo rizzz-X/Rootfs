@@ -6,7 +6,7 @@ on:
         description: 'Rootfs Output Name'
         required: true
       fw_link:
-        description: 'Insert firmware link'
+        description: 'Insert firmware link (Wget)'
         required: true
 
 jobs:
