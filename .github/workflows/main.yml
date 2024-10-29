@@ -37,7 +37,7 @@ jobs:
 
         mv packages/* "$no_extension/packages/"
         mv files "$no_extension/"
-        chmod +x "$no_extension/files/*"
+        chmod -R 755 "$no_extension/files/*"
         
         sed -i 's/option check_signature/# option check_signature/g' "$no_extension/repositories.conf"
         sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz mutiara_wrt https://raw.githubusercontent.com/maizil41/mutiara-wrt-opkg/main/generic' "$no_extension/repositories.conf"        
@@ -64,7 +64,7 @@ jobs:
         usbutils kmod-usb-net-cdc-ether usb-modeswitch openssh-sftp-server kmod-usb2 \
         kmod-usb-net-huawei-cdc-ncm kmod-usb-serial-wwan \
         perlbase-file kmod-brcmutil perlbase-essential perlbase-utf8 \
-        perlbase-file  perlbase-time perlbase-xsloader coreutils-stat \
+        perlbase-file  perlbase-time perlbase-xsloader coreutils-stat sudo \
         luci-app-ttyd luci-app-openclash luci-app-amlogic luci-app-diskman luci-app-tinyfm \
         " FILES="files" > /dev/null 2>&1 || true
 
