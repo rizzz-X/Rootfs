@@ -19,13 +19,13 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        sudo apt update -y
-        sudo apt install net-tools make gawk git curl unzip bzip2 -y
-        sudo apt install -y $(curl -fsSL https://is.gd/depend_ubuntu2204_openwrt)
+        sudo apt update -y > /dev/null 2>&1
+        sudo apt install net-tools make gawk git curl unzip bzip2 -y > /dev/null 2>&1
+        sudo apt install -y $(curl -fsSL https://is.gd/depend_ubuntu2204_openwrt) > /dev/null 2>&1
 
     - name: Download Image Builder
       run: |
-        wget -q "${{ github.event.inputs.builder_link }}" 
+        wget -q "${{ github.event.inputs.builder_link }}" > /dev/null 2>&1
 
     - name: Extract Image Builder
       run: |
