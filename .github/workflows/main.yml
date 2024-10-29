@@ -78,7 +78,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
         name: Mutiara-Wrt Rootfs
-        tag_name: All
+        tag_name: all
         draft: false
         prerelease: false
         files: |
