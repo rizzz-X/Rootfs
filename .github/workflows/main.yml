@@ -39,10 +39,12 @@ jobs:
         
         sed -i 's/option check_signature/# option check_signature/g' "$no_extension/repositories.conf"
         sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz mutiara_wrt https://raw.githubusercontent.com/maizil41/mutiara-wrt-opkg/main/generic' "$no_extension/repositories.conf"        
-          
+
+        echo "file_name=$no_extension" >> $GITHUB_ENV
+        
     - name: Build OpenWRT Rootfs
       run: |
-        cd "$no_extension"
+        cd ${{ env.no_extension }}
         make image PROFILE="generic" PACKAGES=" \
         -dnsmasq -luci-theme-bootstrap \
         dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua liblucihttp liblucihttp-lua \
@@ -66,7 +68,7 @@ jobs:
 
     - name: Find Rootfs
       run: |
-        FILE_PATH=$(find "$no_extension/bin/targets" -name "*.tar.gz" | head -n 1)
+        FILE_PATH=$(find "${{ env.no_extension }}/bin/targets" -name "*.tar.gz" | head -n 1)
         echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
         echo -e "Found Rootfs Path: $FILE_PATH"
 
