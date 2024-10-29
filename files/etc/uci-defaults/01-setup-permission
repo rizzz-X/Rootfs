@@ -1,5 +1,7 @@
 #!/bin/sh
 
+opkg install /root/*.ipk --force-reinstall
+
 chmod -R 755 /lib/wifi/*
 
 chmod -R 755 /lib/netifd/wireless/*
