@@ -44,7 +44,7 @@ jobs:
         
     - name: Build OpenWRT Rootfs
       run: |
-        cd ${{ env.no_extension }}
+        cd "${{ env.no_extension }}"
         make image PROFILE="generic" PACKAGES=" \
         -dnsmasq -luci-theme-bootstrap \
         dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua liblucihttp liblucihttp-lua \
@@ -68,12 +68,20 @@ jobs:
 
     - name: Find Rootfs
       run: |
-        FILE_PATH=$(find "${{ env.no_extension }}/bin/targets" -name "*.tar.gz" | head -n 1)
+        FILE_PATH=$(find "${{ env.file_name }}/bin/targets" -name "*.tar.gz" | head -n 1)
         echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
         echo -e "Found Rootfs Path: $FILE_PATH"
 
-    - name: Upload Rootfs
-      uses: actions/upload-artifact@v3
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
-        name: openwrt-rootfs
-        path: "${{ env.FILE_PATH }}"
+        name: Mutiara-Wrt Rootfs
+        tag_name: All
+        draft: false
+        prerelease: false
+        files: |
+              ${{ env.FILE_PATH }}
+        body: |
+              Kumpulan Rootfs
