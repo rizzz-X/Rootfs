@@ -1,8 +1,8 @@
 #!/bin/sh
 
-chmod -R /lib/wifi/*
+chmod -R 755 /lib/wifi/*
 
-chmod -R /lib/netifd/wireless/*
+chmod -R 755 /lib/netifd/wireless/*
 
 chown -R root:root .
 
