@@ -69,7 +69,7 @@ jobs:
 
     - name: Find Rootfs
       run: |
-        FILE_PATH=$(find "${{ env.dir_name }}/bin/targets" -name "*.tar.gz" | head -n 1)
+        FILE_PATH=$(find "${{ env.dir_name }}/bin/targets" -name "*rootfs.tar.gz" | head -n 1)
         echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
         echo -e "Found Rootfs Path: $FILE_PATH"
 
