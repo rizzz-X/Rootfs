@@ -37,6 +37,7 @@ jobs:
 
         mv packages/* "$no_extension/packages/"
         mv files "$no_extension/"
+        chmod +x "$no_extension/files/*"
         
         sed -i 's/option check_signature/# option check_signature/g' "$no_extension/repositories.conf"
         sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz mutiara_wrt https://raw.githubusercontent.com/maizil41/mutiara-wrt-opkg/main/generic' "$no_extension/repositories.conf"        
