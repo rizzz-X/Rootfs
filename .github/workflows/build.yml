@@ -20,7 +20,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update -y > /dev/null 2>&1
-        sudo apt install net-tools make gawk git curl unzip bzip2 -y > /dev/null 2>&1
+        sudo apt install net-tools make gawk git curl unzip bzip2 zstd tar -y > /dev/null 2>&1
         sudo apt install -y $(curl -fsSL https://is.gd/depend_ubuntu2204_openwrt) > /dev/null 2>&1
 
     - name: Download Image Builder
@@ -30,10 +30,10 @@ jobs:
     - name: Extract Image Builder
       run: |
         filename=$(echo "${{ github.event.inputs.builder_link }}" | awk -F "/" '{print $NF}')
-        no_extension=$(basename "$filename" | sed -E 's/\.tar\.xz$//')
+        no_extension=$(basename "$filename" | sed -E 's/\.tar\.zst$//')
         mkdir -p ${no_extension}
         
-        tar -xf ${filename} -C ${no_extension} --strip-components=1
+        tar --use-compress-program=unzstd -xf ${filename} -C ${no_extension}
         
         sed -i 's/option check_signature/# option check_signature/g' ${no_extension}/repositories.conf
         sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz mutiara_wrt https://raw.githubusercontent.com/maizil41/mutiara-wrt-opkg/main/generic' ${no_extension}/repositories.conf      
