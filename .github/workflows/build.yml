@@ -35,9 +35,6 @@ jobs:
         
         tar --use-compress-program=unzstd -xf ${filename} -C ${no_extension}
         
-        sed -i 's/option check_signature/# option check_signature/g' ${no_extension}/repositories.conf
-        sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz mutiara_wrt https://raw.githubusercontent.com/maizil41/mutiara-wrt-opkg/main/generic' ${no_extension}/repositories.conf      
-
         echo "dir_name=${no_extension}" >> $GITHUB_ENV
         
     - name: Build OpenWRT Rootfs
