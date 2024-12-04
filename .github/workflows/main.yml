@@ -40,8 +40,8 @@ jobs:
         mv files ${no_extension}
         chmod -R 755 ${no_extension}/files/*
         
-        # sed -i 's/option check_signature/# option check_signature/g' ${no_extension}/repositories.conf
-        # sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz mutiara_wrt https://raw.githubusercontent.com/maizil41/mutiara-wrt-opkg/main/generic' ${no_extension}/repositories.conf      
+        sed -i 's/option check_signature/# option check_signature/g' ${no_extension}/repositories.conf
+        sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz mutiara_wrt https://raw.githubusercontent.com/maizil41/mutiara-wrt-opkg/main/generic' ${no_extension}/repositories.conf      
 
         echo "dir_name=${no_extension}" >> $GITHUB_ENV
         
@@ -67,11 +67,11 @@ jobs:
         perlbase-file kmod-brcmutil perlbase-essential perlbase-utf8 \
         perlbase-file  perlbase-time perlbase-xsloader coreutils-stat sudo \
         luci-app-ttyd luci-app-openclash luci-app-amlogic luci-app-diskman luci-app-tinyfm \
-        " FILES="files" > /dev/null 2>&1 || true
+        " FILES="files" || true
 
     - name: Find Rootfs
       run: |
-        FILE_PATH=$(find "${{ env.dir_name }}/bin/targets" -name "*rootfs.tar.gz" | head -n 1)
+        FILE_PATH=$(find -name "*rootfs.tar.gz" | head -n 1)
         echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
         echo -e "Found Rootfs Path: $FILE_PATH"
 
