@@ -1,4 +1,4 @@
-name: Build OpenWRT Rootfs
+name: Build Rootfs 21 PHP7
 
 on:
   repository_dispatch:
