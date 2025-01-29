@@ -1,0 +1,11 @@
+name: NOVNC
+on:
+  workflow_dispatch:
+jobs:
+  check:
+    name: NOVNC
+    runs-on: ubuntu-latest
+    steps:
+      - name: RUN-VNC
+        run: |
+          docker run -p 6070:80 dorowu/ubuntu-desktop-lxde-vnc
