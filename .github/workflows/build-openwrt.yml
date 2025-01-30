@@ -161,4 +161,4 @@ jobs:
         files: |
               ${{ env.FILE_PATH }}
         body: |
-              Rootfs
+              Mutiara-Wrt ${{ github.event.inputs.openwrt_ver }} Rootfs
