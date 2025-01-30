@@ -91,6 +91,10 @@ jobs:
         
         mv files OpenWrt-Builder
         chmod -R 755 OpenWrt-Builder/files/*
+
+        sed -i 's/option check_signature/# option check_signature/g' OpenWrt-Builder/repositories.conf
+        sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz custom_arch https://raw.githubusercontent.com/lrdrdn/my-opkg-repo/main/aarch64_generic' OpenWrt-Builder/repositories.conf
+        sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz custom_generic https://raw.githubusercontent.com/lrdrdn/my-opkg-repo/main/generic' OpenWrt-Builder/repositories.conf
         
     - name: Build OpenWRT Rootfs
       run: |
@@ -114,7 +118,8 @@ jobs:
         kmod-usb-net-huawei-cdc-ncm kmod-usb-serial-wwan \
         perlbase-file kmod-brcmutil perlbase-essential perlbase-utf8 \
         perlbase-file  perlbase-time perlbase-xsloader coreutils-stat sudo \
-        luci-app-ttyd luci-app-amlogic luci-app-diskman"
+        luci-app-modeminfo luci-app-3ginfo-lite luci-app-modemband luci-app-sms-tool-js luci-app-internet-detector \
+        luci-app-ttyd luci-app-amlogic luci-app-diskman luci-app-tailscale"
 
         if [[ "${{ github.event.inputs.tunnel }}" == "All" ]]; then
           PACKAGES="$PACKAGES luci-app-mihomo luci-app-openclash"
