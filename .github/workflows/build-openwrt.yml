@@ -82,7 +82,13 @@ jobs:
         # no_extension=$(basename "$filename" | sed "s/\.$extension$//")
         mkdir -p OpenWrt-Builder
         tar -x -f ${filename} -C OpenWrt-Builder --strip-components=1
-        mv packages/* OpenWrt-Builder/packages/
+        
+        if [[ "${{ github.event.inputs.openwrt_ver }}" == 23.* ]]; then
+          mv packages/23.05/* OpenWrt-Builder/packages/
+        elif [[ "${{ github.event.inputs.openwrt_ver }}" == 24.* ]]; then
+          mv packages/24.10/* OpenWrt-Builder/packages/
+        fi
+        
         mv files OpenWrt-Builder
         chmod -R 755 OpenWrt-Builder/files/*
         
