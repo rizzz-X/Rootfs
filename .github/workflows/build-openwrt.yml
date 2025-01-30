@@ -6,20 +6,12 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      Openwrt_ver:
+      openwrt_ver:
         description: 'Select OpenWrt Version'
         required: true
-        default: '24.10.x'
+        default: '23.05.0'
         type: choice
         options:
-          - '22.03.0'
-          - '22.03.1'
-          - '22.03.2'
-          - '22.03.3'
-          - '22.03.4'
-          - '22.03.5'
-          - '22.03.6'
-          - '22.03.7'
           - '23.05.0'
           - '23.05.1'
           - '23.05.2'
@@ -74,11 +66,18 @@ jobs:
 
     - name: Download Image Builder
       run: |
-        wget -q "${{ github.event.inputs.builder_link }}" > /dev/null 2>&1
+        if [[ "${{ github.event.inputs.openwrt_ver }}" == 23.* ]]; then
+          builder_link="https://downloads.openwrt.org/releases/${{ github.event.inputs.openwrt_ver }}/targets/${{ github.event.inputs.openwrt_target }}/openwrt-imagebuilder-${{ github.event.inputs.openwrt_ver }}-armsr-armv8.Linux-x86_64.tar.xz"
+        elif [[ "${{ github.event.inputs.openwrt_ver }}" == 24.* ]]; then
+          builder_link="https://downloads.openwrt.org/releases/${{ github.event.inputs.openwrt_ver }}/targets/${{ github.event.inputs.openwrt_target }}/openwrt-imagebuilder-${{ github.event.inputs.openwrt_ver }}-armsr-armv8.Linux-x86_64.tar.zst"
+        fi
+        wget -q "${builder_link}" > /dev/null 2>&1
+        
+        echo "builder_link=${builder_link}" >> $GITHUB_ENV
 
     - name: Extract Image Builder
       run: |
-        filename=$(echo "${{ github.event.inputs.builder_link }}" | awk -F "/" '{print $NF}')
+        filename=$(echo "${{ env.builder_link }}" | awk -F "/" '{print $NF}')
         # extension=$(echo "$filename" | awk -F'.' '{print $(NF-1)"."$NF}')
         # no_extension=$(basename "$filename" | sed "s/\.$extension$//")
         mkdir -p OpenWrt-Builder
