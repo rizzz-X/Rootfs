@@ -12,13 +12,34 @@ on:
         default: '24.10.x'
         type: choice
         options:
-          - '22.03.x'
-          - '23.05.x'
-          - '24.10.x'
-      builder_link:
-        description: "Insert ImageBuilder Link"
+          - '22.03.0'
+          - '22.03.1'
+          - '22.03.2'
+          - '22.03.3'
+          - '22.03.4'
+          - '22.03.5'
+          - '22.03.6'
+          - '22.03.7'
+          - '23.05.0'
+          - '23.05.1'
+          - '23.05.2'
+          - '23.05.3'
+          - '23.05.4'
+          - '23.05.5'
+          - '24.10.0-rc1'
+          - '24.10.0-rc2'
+          - '24.10.0-rc3'
+          - '24.10.0-rc4'
+          - '24.10.0-rc5'
+          - '24.10.0-rc6'
+          - '24.10.0-rc7'
+      openwrt_target:
+        description: 'Select OpenWrt Targets'
         required: true
-        default: ""
+        default: 'armsr/armv8'
+        type: choice
+        options:
+          - 'armsr/armv8'
       tunnel:
         description: 'Select Tunnel To Install'
         required: true
