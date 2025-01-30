@@ -15,3 +15,4 @@ uci set system.@system[0].hostname='mutiara-wrt' && uci commit
 uci set system.@system[0].timezone='WIB-7' && uci commit
 uci set system.@system[0].ttylogin='0' && uci commit
 uci set system.@system[0].zonename='Asia/Jakarta' && uci commit
+
