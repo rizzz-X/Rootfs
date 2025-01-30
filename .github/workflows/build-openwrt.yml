@@ -98,9 +98,10 @@ jobs:
         chmod -R 755 OpenWrt-Builder/files/*
 
         sed -i 's/option check_signature/# option check_signature/g' OpenWrt-Builder/repositories.conf
-        sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz custom_arch https://raw.githubusercontent.com/lrdrdn/my-opkg-repo/main/aarch64_generic' OpenWrt-Builder/repositories.conf
-        sed -i '/# src custom file:\/\/\/usr\/src\/openwrt\/bin\/armsr\/packages/a src/gz custom_generic https://raw.githubusercontent.com/lrdrdn/my-opkg-repo/main/generic' OpenWrt-Builder/repositories.conf
-        
+        sed -i '/# option check_signature/a src/gz custom_arch https://raw.githubusercontent.com/lrdrdn/my-opkg-repo/main/aarch64_generic' OpenWrt-Builder/repositories.conf
+        sed -i '/# option check_signature/a src/gz custom_generic https://raw.githubusercontent.com/lrdrdn/my-opkg-repo/main/generic' OpenWrt-Builder/repositories.conf
+
+
     - name: Build OpenWRT Rootfs
       run: |
         cd OpenWrt-Builder
