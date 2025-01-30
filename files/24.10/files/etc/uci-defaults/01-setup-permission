@@ -7,3 +7,11 @@ chmod -R 755 /etc/profile.d/*
 chmod 755 /etc/mutiara-wrt
 chmod 755 /etc/profile
 chown -R root:root .
+sleep 1
+(echo "mutiara"; sleep 1; echo "mutiara") | passwd > /dev/null
+sleep 1
+uci set ttyd.@ttyd[0].command='/bin/bash --login' && uci commit
+uci set system.@system[0].hostname='mutiara-wrt' && uci commit
+uci set system.@system[0].timezone='WIB-7' && uci commit
+uci set system.@system[0].ttylogin='0' && uci commit
+uci set system.@system[0].zonename='Asia/Jakarta' && uci commit
