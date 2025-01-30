@@ -89,7 +89,12 @@ jobs:
           mv packages/24.10/* OpenWrt-Builder/packages/
         fi
         
-        mv files OpenWrt-Builder
+        if [[ "${{ github.event.inputs.openwrt_ver }}" == 23.* ]]; then
+          mv files/23.05/files OpenWrt-Builder/files
+        elif [[ "${{ github.event.inputs.openwrt_ver }}" == 24.* ]]; then
+          mv files/24.10/files OpenWrt-Builder/files
+        fi
+        
         chmod -R 755 OpenWrt-Builder/files/*
 
         sed -i 's/option check_signature/# option check_signature/g' OpenWrt-Builder/repositories.conf
