@@ -1,9 +1,20 @@
+# Copyright (C) 2024 Maizil41 https://github.com/maizil41
+#
 name: Build OpenWRT Rootfs
 
 on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
+      Openwrt_ver:
+        description: 'Select OpenWrt Version'
+        required: true
+        default: '24.10.x'
+        type: choice
+        options:
+          - '22.03.x'
+          - '23.05.x'
+          - '24.10.x'
       builder_link:
         description: "Insert ImageBuilder Link"
         required: true
@@ -47,6 +58,8 @@ jobs:
     - name: Extract Image Builder
       run: |
         filename=$(echo "${{ github.event.inputs.builder_link }}" | awk -F "/" '{print $NF}')
+        # extension=$(echo "$filename" | awk -F'.' '{print $(NF-1)"."$NF}')
+        # no_extension=$(basename "$filename" | sed "s/\.$extension$//")
         mkdir -p OpenWrt-Builder
         tar -x -f ${filename} -C OpenWrt-Builder --strip-components=1
         mv packages/* OpenWrt-Builder/packages/
@@ -105,11 +118,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       with:
-        name: Mutiara-Wrt Rootfs
-        tag_name: all
+        name: Mutiara-Wrt ${{ github.event.inputs.openwrt_ver }}
+        tag_name: ${{ github.event.inputs.openwrt_ver }}
         draft: false
         prerelease: false
         files: |
               ${{ env.FILE_PATH }}
         body: |
-              Kumpulan Rootfs
+              Rootfs
