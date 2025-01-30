@@ -43,7 +43,8 @@
 		"title": "Firewall",
 		"order": 3,
 		"action": {
-			"type": "firstchild"
+			"type": "view",
+			"path": "status/nftables"
 		},
 		"depends": {
 			"acl": [ "luci-mod-status-firewall" ],
@@ -51,18 +52,7 @@
 		}
 	},
 	
-	"admin/status/firewall/nftables": {
-	    "title": "Nftables",
-	    "order": 1,
-		"action": {
-			"type": "view",
-			"path": "status/nftables"
-		}
-	},
-
 	"admin/status/firewall/iptables": {
-	    "title": "Iptables",
-	    "order": 2,
 		"action": {
 			"type": "view",
 			"path": "status/iptables"
