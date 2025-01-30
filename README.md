@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Mutiara-Wrt Rootfs Extractor</h1>
+  <h1>Mutiara-Wrt Rootfs</h1>
 </div>
 
 <div align="center">
