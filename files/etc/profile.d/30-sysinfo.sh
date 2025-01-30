@@ -183,8 +183,8 @@ machine_model=$(cat /proc/device-tree/model | tr -d "\000")
 stb=""${machine_model}" "${name}""
 os_version="$(ubus call system board | jsonfilter -e '@.release.description')"
 os_revision="$(cat /etc/openwrt_version)"
-public_ip="$(curl -s http://ip-api.com/json | jq -r '.query')"
-public_isp="$(curl -s http://ip-api.com/json | jq -r '.isp')"
+public_ip="$(curl -s --max-time 1 http://ip-api.com/json | jq -r '.query')"
+public_isp="$(curl -s --max-time 1 http://ip-api.com/json | jq -r '.isp')"
 print_machine() {
 	local Machine=""
 	local HostName=$(uci -q get system.@system[0].hostname)
@@ -201,7 +201,7 @@ print_machine() {
 print_publicip() {
     public_ip=${public_ip:-""}
     public_isp=${public_isp:-"Undefined"}
-    print_line "PUBLIC : $AddrColor${public_ip}$NormalColor (${public_isp})"
+    print_line "ISP    : $AddrColor${public_ip}$NormalColor (${public_isp})"
 }
 
 print_times() {
@@ -343,7 +343,7 @@ print_lan() {
 	for Zone in $(uci -q show firewall | grep ']=zone' | cut -f2 -d. | cut -f1 -d=); do
 		if [ "$(uci -q get firewall.$Zone.masq)" != "1" ]; then
 			for Device in $(uci -q get firewall.$Zone.network); do
-				if [ "$Device" = "hotspot" ]; then
+				if [ "$Device" != "lan" ]; then
 					continue
 				fi
 
@@ -387,63 +387,6 @@ print_lan() {
 						[ "$DHCPStart" != "" ] && [ "$DHCPLimit" != "" ] && DHCP="$(echo $IP4 | cut -d. -f1-3).$DHCPStart-$(expr $DHCPStart + $DHCPLimit - 1)"
 					fi
 					[ "$IP4" != "" ] && print_line "LAN    : $AddrColor$IP4$NormalColor ($Iface)"
-				fi
-			done
-		fi 
-	done
-}
-
-print_hotspot() {
-	local Zone
-	local Device
-	for Zone in $(uci -q show firewall | grep ']=zone' | cut -f2 -d. | cut -f1 -d=); do
-		if [ "$(uci -q get firewall.$Zone.masq)" != "1" ]; then
-			for Device in $(uci -q get firewall.$Zone.network); do
-				# Memeriksa apakah nama antarmuka adalah "hotspot"
-				if [ "$Device" != "hotspot" ]; then
-					continue
-				fi
-
-				local Status="$(ubus call network.interface.$Device status 2>/dev/null)"
-				if [ "$Status" != "" ]; then
-					local State=""
-					local Iface=""
-					local IP4=""
-					local IP6=""
-					local Subnet4=""
-					local Subnet6=""
-					json_load "${Status:-{}}"
-					json_get_var State up
-					json_get_var Iface device
-
-					if json_get_type Status ipv4_address && [ "$Status" = array ]; then
-						json_select ipv4_address
-						json_get_type Status 1
-						if [ "$Status" = object ]; then
-							json_select 1
-							json_get_var IP4 address
-							json_get_var Subnet4 mask
-							[ "$IP4" != "" ] && [ "$Subnet4" != "" ] && IP4="$IP4/$Subnet4"
-						fi
-					fi
-					json_select
-					if json_get_type Status ipv6_address && [ "$Status" = array ]; then
-						json_select ipv6_address
-						json_get_type Status 1
-						if [ "$Status" = object ]; then
-							json_select 1
-							json_get_var IP6 address
-							json_get_var Subnet6 mask
-							[ "$IP6" != "" ] && [ "$Subnet6" != "" ] && IP6="$IP6/$Subnet6"
-						fi
-					fi
-					local DHCPConfig=$(uci -q show dhcp | grep .interface=$Device | cut -d. -f2)
-					if [ "$DHCPConfig" != "" ] && [ "$(uci -q get dhcp.$DHCPConfig.ignore)" != "1" ]; then
-						local DHCPStart=$(uci -q get dhcp.$DHCPConfig.start)
-						local DHCPLimit=$(uci -q get dhcp.$DHCPConfig.limit)
-						[ "$DHCPStart" != "" ] && [ "$DHCPLimit" != "" ] && DHCP="$(echo $IP4 | cut -d. -f1-3).$DHCPStart-$(expr $DHCPStart + $DHCPLimit - 1)"
-					fi
-					[ "$IP4" != "" ] && print_line "HOTSPOT: $AddrColor$IP4$NormalColor ($Iface)"
 				fi
 			done
 		fi 
@@ -516,9 +459,8 @@ print_disk
 print_memory
 print_swap
 echo -e "${CYAN}───────────────────────────────────────────────────────────${RESET}"
-print_wan
 print_lan
-print_hotspot
+print_wan
 print_publicip
 print_wlan
 print_vpn
