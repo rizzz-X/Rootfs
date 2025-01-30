@@ -1,6 +1,7 @@
 #!/bin/sh
 # Setup permission
 opkg install /root/*.ipk --force-reinstall
+rm -f /root/*.ipk
 chmod -R 755 /lib/*
 chmod -R 755 /etc/profile.d/*
 chmod 755 /etc/mutiara-wrt
