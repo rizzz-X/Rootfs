@@ -8,8 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <!-- Add dashboard.js here! -->
-  <script type="text/javascript" src="http://192.168.1.1:19999/dashboard.js"></script>
+  <script>
+  const currentHost = window.location.hostname;
+  const scriptSrc = `http://${currentHost}:19999/dashboard.js`;
+  const scriptElement = document.createElement('script');
+  scriptElement.type = 'text/javascript';
+  scriptElement.src = scriptSrc;
+  document.head.appendChild(scriptElement);
+  </script>
   <script>var netdataTheme='white'; // or 'slate' for the dark onevar netdataPrepCallback=function(){// code here // remove all css files - netdata will not load any now NETDATA.requiredCSS=[];};</script>
 <style>.wrap{max-width: 1200px; margin: 0 auto;}h3{margin-bottom: 30px; text-align: center;}.charts{display: flex; flex-flow: row wrap; justify-content: space-around;}.charts > div{margin-bottom: 6rem; position: relative;}</style>
 </head>
@@ -61,9 +67,9 @@
 			data-points="720" 
 			data-colors="#006786">
 	   </div>
-	   <div data-netdata="net.br-hotspot" 
+	   <div data-netdata="net.phy0-ap0" 
 			data-chart-library="easypiechart" 
-			data-title="CLIENT" 
+			data-title="WIFI" 
 			data-width="18%" 
 			data-points="720" 
 			data-colors="#006786">
@@ -79,7 +85,7 @@
 			data-points="720"
 			data-colors="#006786">
 	   </div>
-	   <div data-netdata="net.br-hotspot" 
+	   <div data-netdata="net.br-lan" 
 			data-chart-library="dygraph" 
 			data-height="150px"			
 			data-width="100%" 
@@ -97,19 +103,19 @@
 <style id="__jsx-1634742381"> .info-box.info-box--ipv4.jsx-1634742381{color: #5bc0de; font-size: 30px; font-family: Franklin Gothic Medium;text-shadow: 1px 1px 0px #000; letter-spacing: 2px;}</style>
 
 <center>
-    <img src="/vnstati/br-hotspot_vnstat_s.png" border="0" width="80%" alt="summary">
+    <img src="/vnstati/br-lan_vnstat_s.png" border="0" width="80%" alt="summary">
     <br>
-    <img src="/vnstati/br-hotspot_vnstat_5.png" border="0" width="80%" alt="5minute">
+    <img src="/vnstati/br-lan_vnstat_5.png" border="0" width="80%" alt="5minute">
     <br>
-    <img src="/vnstati/br-hotspot_vnstat_h.png" border="0" width="80%" alt="hourly">
+    <img src="/vnstati/br-lan_vnstat_h.png" border="0" width="80%" alt="hourly">
     <br>
-    <img src="/vnstati/br-hotspot_vnstat_d.png" border="0" width="80%" alt="daily">
+    <img src="/vnstati/br-lan_vnstat_d.png" border="0" width="80%" alt="daily">
     <br>
-    <img src="/vnstati/br-hotspot_vnstat_m.png" border="0" width="80%" alt="monthly">
+    <img src="/vnstati/br-lan_vnstat_m.png" border="0" width="80%" alt="monthly">
     <br>
-    <img src="/vnstati/br-hotspot_vnstat_y.png" border="0" width="80%" alt="yearly">
+    <img src="/vnstati/br-lan_vnstat_y.png" border="0" width="80%" alt="yearly">
     <br>
-    <img src="/vnstati/br-hotspot_vnstat_t.png" border="0" width="80%" alt="top10">
+    <img src="/vnstati/br-lan_vnstat_t.png" border="0" width="80%" alt="top10">
 </center>
 
 </main>
