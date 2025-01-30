@@ -1,17 +1,26 @@
-name: Build OpenWRT 24.10.x Rootfs
+name: Build OpenWRT Rootfs
 
 on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
       builder_link:
-        description: "Insert ImageBuilder Link (FW 24.10.x)"
+        description: "Insert ImageBuilder Link"
         required: true
         default: ""
-      enable_feature:
-        description: 'Enable Feature?'
+      tunnel:
+        description: 'Select Tunnel To Install'
         required: true
-        default: 'false'
+        default: 'All'
+        type: choice
+        options:
+          - 'All'
+          - 'Openclash'
+          - 'Mihomo'
+      rakitan:
+        description: 'Modem Rakitan Support'
+        required: true
+        default: 'true'
         type: choice
         options:
           - 'true'
@@ -43,11 +52,12 @@ jobs:
         mv packages/* OpenWrt-Builder/packages/
         mv files OpenWrt-Builder
         chmod -R 755 OpenWrt-Builder/files/*
-                
+        
     - name: Build OpenWRT Rootfs
       run: |
         cd OpenWrt-Builder
-        make image PROFILE="generic" PACKAGES=" \
+        
+        PACKAGES=" \
         -dnsmasq -luci-theme-bootstrap \
         dnsmasq-full cgi-io libiwinfo libiwinfo-data libiwinfo-lua liblua liblucihttp liblucihttp-lua \
         libubus-lua lua luci luci-app-firewall luci-app-opkg luci-base luci-lib-base \
@@ -65,8 +75,24 @@ jobs:
         kmod-usb-net-huawei-cdc-ncm kmod-usb-serial-wwan \
         perlbase-file kmod-brcmutil perlbase-essential perlbase-utf8 \
         perlbase-file  perlbase-time perlbase-xsloader coreutils-stat sudo \
-        luci-app-ttyd luci-app-openclash luci-app-amlogic luci-app-diskman \
-        " FILES="files" || true
+        luci-app-ttyd luci-app-amlogic luci-app-diskman"
+
+        if [[ "${{ github.event.inputs.tunnel }}" == "All" ]]; then
+          PACKAGES="$PACKAGES luci-app-mihomo luci-app-openclash"
+        elif [[ "${{ github.event.inputs.tunnel }}" == "Openclash" ]]; then
+          PACKAGES="$PACKAGES luci-app-openclash"
+        elif [[ "${{ github.event.inputs.tunnel }}" == "Mihomo" ]]; then
+          PACKAGES="$PACKAGES luci-app-mihomo"
+        fi
+
+        if [[ "${{ github.event.inputs.rakitan }}" == "true" ]]; then
+          PACKAGES="$PACKAGES kmod-mii kmod-usb-net kmod-usb-wdm kmod-usb-net-qmi-wwan uqmi luci-proto-qmi \
+          kmod-usb-net-cdc-ether kmod-usb-serial-option kmod-usb-serial kmod-usb-serial-wwan qmi-utils \
+          kmod-usb-serial-qualcomm kmod-usb-acm kmod-usb-net-cdc-ncm kmod-usb-net-cdc-mbim umbim \
+          modemmanager luci-proto-modemmanager"
+        fi
+
+        make image PROFILE="generic" PACKAGES="$PACKAGES" FILES="files" || true
 
     - name: Find Rootfs
       run: |
