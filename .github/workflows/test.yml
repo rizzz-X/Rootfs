@@ -1,0 +1,19 @@
+name: Debug with SSH
+
+on: workflow_dispatch  # Jalankan secara manual dari GitHub Actions
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install tmate
+        run: sudo apt update && sudo apt install -y tmate
+
+      - name: Start SSH session
+        run: tmate -F
+
+      - name: Keep session alive
+        run: sleep 1h
