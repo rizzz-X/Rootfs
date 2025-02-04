@@ -18,13 +18,7 @@ on:
           - '23.05.3'
           - '23.05.4'
           - '23.05.5'
-          - '24.10.0-rc1'
-          - '24.10.0-rc2'
-          - '24.10.0-rc3'
-          - '24.10.0-rc4'
-          - '24.10.0-rc5'
-          - '24.10.0-rc6'
-          - '24.10.0-rc7'
+          - '24.10.0'
       openwrt_target:
         description: 'Select OpenWrt Targets'
         required: true
