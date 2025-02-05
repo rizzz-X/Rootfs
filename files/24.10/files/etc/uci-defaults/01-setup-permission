@@ -4,18 +4,26 @@ opkg install /root/*.ipk --force-reinstall
 rm -f /root/*.ipk
 chmod -R 755 /lib/*
 chmod -R 755 /etc/profile.d/*
-chmod 755 /etc/mutiara-wrt
+chmod 755 /etc/banner
 chmod 755 /etc/profile
 chown -R root:root .
 
-(echo "mutiara"; sleep 1; echo "mutiara") | passwd > /dev/null
+# Step 1: Configure Password Login OpenWrt
+msg "Step 1: Configure Password Login OpenWrt"
+(echo "root"; sleep 1; echo "root") | passwd > /dev/null
 
 uci set ttyd.@ttyd[0].command='/bin/bash --login'
 uci commit ttyd
 
-uci set system.@system[0].hostname='mutiara-wrt'
+# Set hostname and Timezone to Asia/Jakarta
+msg "Setup NTP Server and Time Zone to Asia/Jakarta"
+uci set system.@system[0].hostname='RizzWrt'
 uci set system.@system[0].timezone='WIB-7'
 uci set system.@system[0].zonename='Asia/Jakarta'
+uci -q delete system.ntp.server
+uci add_list system.ntp.server="pool.ntp.org"
+uci add_list system.ntp.server="id.pool.ntp.org"
+uci add_list system.ntp.server="time.google.com"
 uci commit system
 
 uci del dhcp.lan.ra
