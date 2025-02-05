@@ -1,1 +1,1 @@
-export const revision = 'Only', branch = 'Tunnel';
+export const revision = 'Edition', branch = 'special';
