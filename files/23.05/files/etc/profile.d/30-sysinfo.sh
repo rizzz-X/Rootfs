@@ -13,8 +13,6 @@ ErrorColor=""
 ExtraName=""
 ExtraValue=""
 HTML=""
-CYAN="\e[1;36m"
-RESET="\e[0m"
 initialize() { # <Script Parameters>
 	local ColorMode="c"
 	if [ ! -z "$REQUEST_METHOD" ]; then
@@ -178,13 +176,9 @@ else
 fi
 cpu_tempx="$(echo ${cpu_temp} | sed -e 's/°C//g' -e 's/[ ][ ]*//g')"
 [[ "$(echo ${cpu_tempx} | awk -F'.' '{print $1}' | wc -c)" -gt "3" ]] && cpu_tempx="${cpu_tempx:0:2}.0"
-name=$(cat /etc/version)
-machine_model=$(cat /proc/device-tree/model | tr -d "\000")
-stb=""${machine_model}" "${name}""
-os_version="$(ubus call system board | jsonfilter -e '@.release.description')"
-os_revision="$(cat /etc/openwrt_version)"
-public_ip="$(curl -s --max-time 1 http://ip-api.com/json | jq -r '.query')"
-public_isp="$(curl -s --max-time 1 http://ip-api.com/json | jq -r '.isp')"
+# board type
+stb="B860H-V1 For RizzWrt"
+kernel=$(echo $(uname -r))
 print_machine() {
 	local Machine=""
 	local HostName=$(uci -q get system.@system[0].hostname)
@@ -193,22 +187,16 @@ print_machine() {
 	elif [ -e /proc/cpuinfo ]; then
 		Machine=$(awk 'BEGIN{FS="[ \t]+:[ \t]";OFS=""}/machine/{Machine=$2}/Hardware/{Hardware=$2}END{print Machine,(Machine!="" && Hardware!="")?" ":"",Hardware}' /proc/cpuinfo 2>/dev/null)
 	fi
-	print_line "${NormalColor}Model  : $MachineColor$stb$NormalColor"
-	print_line "${NormalColor}Arch   : $MachineColor$sys_tempx ${cpu_tempx}°C$NormalColor"
-	print_line "${NormalColor}System : $MachineColor${os_version} ${os_revision}$NormalColor"
-}
-
-print_publicip() {
-    public_ip=${public_ip:-""}
-    public_isp=${public_isp:-"Undefined"}
-    print_line "ISP    : $AddrColor${public_ip}$NormalColor (${public_isp})"
+	print_line "${NormalColor}Model : $MachineColor$stb$NormalColor"
+	print_line "${NormalColor}Arch  : $MachineColor$sys_tempx ${cpu_tempx}°C$NormalColor"
+	print_line "${NormalColor}Kernel: $MachineColor$kernel$NormalColor"
 }
 
 print_times() {
 	local SysUptime=$(cut -d. -f1 /proc/uptime)
 	local Uptime=$(uptime_str $SysUptime)
 	local Now=$(date +'%Y-%m-%d %H:%M:%S')
-	print_line 	"Uptime : $ValueColor$Uptime$NormalColor,"\
+	print_line 	"Uptime: $ValueColor$Uptime$NormalColor,"\
 				"$ValueColor$Now$NormalColor"
 }
 
@@ -218,7 +206,7 @@ print_fs_summary() { # <Mount point> <Label>
 	local Used=$(echo "$DeviceInfo" | cut -f 2)
 	local UsedPercent=$(echo "$DeviceInfo" | cut -f 3)
 	local Free=$(echo "$DeviceInfo" | cut -f 4)
-	[ "$Total" -gt 0 ] && print_line "$2 :"\
+	[ "$Total" -gt 0 ] && print_line "$2:"\
 				"$ValueColor$(human_readable $Total)$NormalColor,"\
 				"used: $ValueColor$(human_readable $Used)$NormalColor,"\
 				"free: $ValueColor$(human_readable $Free)$NormalColor"
@@ -240,7 +228,7 @@ print_memory() {
 	local Used=$(echo "$Memory" | cut -f 2)
 	local UsedPercent=$(echo "$Memory" | cut -f 3)
 	local Free=$(echo "$Memory" | cut -f 4)
-	print_line "Memory :"\
+	print_line "Memory:"\
 				"$ValueColor$(human_readable $Total)$NormalColor,"\
 				"used: $ValueColor$(human_readable $Used)$NormalColor,"\
 				"free: $ValueColor$(human_readable $Free)$NormalColor"
@@ -252,7 +240,7 @@ print_swap() {
 	local Used=$(echo "$Swap" | cut -f 2)
 	local UsedPercent=$(echo "$Swap" | cut -f 3)
 	local Free=$(echo "$Swap" | cut -f 4)
-	[ "$Total" -gt 0 ] && print_line "Swap :"\
+	[ "$Total" -gt 0 ] && print_line "Swap:"\
 				"total: $ValueColor$(human_readable $Total)$NormalColor,"\
 				"used: $ValueColor$(human_readable $Used)$NormalColor, $ValueColor$UsedPercent$NormalColor%%,"\
 				"free: $ValueColor$(human_readable $Free)$NormalColor"
@@ -329,7 +317,7 @@ print_wan() {
 						done
 					fi
 					if [ "$State" == "1" ]; then
-						[ "$IP4" != "" ] && print_line 	"WAN    : $AddrColor$IP4$NormalColor ($Iface)"
+						[ "$IP4" != "" ] && print_line 	"WAN   : $AddrColor$IP4$NormalColor ($Iface)"
 					fi
 				fi
 			done
@@ -340,13 +328,9 @@ print_wan() {
 print_lan() {
 	local Zone
 	local Device
-	for Zone in $(uci -q show firewall | grep ']=zone' | cut -f2 -d. | cut -f1 -d=); do
+	for Zone in $(uci -q show firewall | grep []]=zone | cut -f2 -d. | cut -f1 -d=); do
 		if [ "$(uci -q get firewall.$Zone.masq)" != "1" ]; then
 			for Device in $(uci -q get firewall.$Zone.network); do
-				if [ "$Device" != "lan" ]; then
-					continue
-				fi
-
 				local Status="$(ubus call network.interface.$Device status 2>/dev/null)"
 				if [ "$Status" != "" ]; then
 					local State=""
@@ -358,7 +342,6 @@ print_lan() {
 					json_load "${Status:-{}}"
 					json_get_var State up
 					json_get_var Iface device
-
 					if json_get_type Status ipv4_address && [ "$Status" = array ]; then
 						json_select ipv4_address
 						json_get_type Status 1
@@ -386,7 +369,7 @@ print_lan() {
 						local DHCPLimit=$(uci -q get dhcp.$DHCPConfig.limit)
 						[ "$DHCPStart" != "" ] && [ "$DHCPLimit" != "" ] && DHCP="$(echo $IP4 | cut -d. -f1-3).$DHCPStart-$(expr $DHCPStart + $DHCPLimit - 1)"
 					fi
-					[ "$IP4" != "" ] && print_line "LAN    : $AddrColor$IP4$NormalColor ($Iface)"
+					[ "$IP4" != "" ] && print_line "LAN   : $AddrColor$IP4$NormalColor ($Iface)"
 				fi
 			done
 		fi 
@@ -458,14 +441,12 @@ print_times
 print_disk
 print_memory
 print_swap
-echo -e "${CYAN}───────────────────────────────────────────────────────────${RESET}"
-print_lan
 print_wan
-print_publicip
+print_lan
 print_wlan
 print_vpn
 print_extra
-echo -e "${CYAN}───────────────────────────────────────────────────────────${RESET}"
+echo " ──────────────────────────────────────────────────"
 finalize
 #exit 0
 # Done.
