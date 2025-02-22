@@ -1,6 +1,7 @@
 [ -e /tmp/.failsafe ] && export FAILSAFE=1
 
-/etc/mutiara-wrt
+[ -f /etc/banner ] && cat /etc/banner
+[ -n "$FAILSAFE" ] && cat /etc/banner.failsafe
 
 grep -Fsq '/ overlay ro,' /proc/mounts && {
 	echo 'Your JFFS2-partition seems full and overlayfs is mounted read-only.'
